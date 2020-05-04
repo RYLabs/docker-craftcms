@@ -18,7 +18,12 @@ services:
     build:
       dockerfile: ./.dockerdev/fpm.Dockerfile
       context: .
-    image: php:7-fpm
+    environment: &php_environment
+      DB_DSN: pgsql:host=db;port=5432;dbname=postgres
+      DB_USER: postgres
+      DB_PASSWORD: ''
+      DB_SCHEMA: public
+      DB_TABLE_PREFIX: ''
     volumes:
       - .:/usr/share/nginx
     depends_on: 
@@ -26,23 +31,12 @@ services:
   php:
     build:
       context: .
+    environment:
+      <<: *php_environment
     volumes:
       - .:/usr/share/nginx
     depends_on:
       - db
-#    environment:
-#      DB_DRIVER: mysql
-#      DB_SERVER: db
-#      DB_PORT: '3306'
-#      DB_USER: root
-#      DB_PASSWORD: ''
-#      DB_DATABASE: pocketmaps
-#      DB_SCHEMA: public
-#      DB_TABLE_PREFIX: craft_
-#      DEFAULT_SITE_URL: /
-#      ASSETS_BASE_PATH: /var/www/web/assets/local_uploads
-#      ASSETS_PUBLIC_PATH: /assets/local_uploads
-#      ENVIRONMENT: dev
 volumes:
   postgres:
 
