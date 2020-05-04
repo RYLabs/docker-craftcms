@@ -1,0 +1,48 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./.dockerdev/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - .:/usr/share/nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - fpm 
+  fpm:
+    build:
+      dockerfile: ./.dockerdev/fpm.Dockerfile
+      context: .
+    image: php:7-fpm
+    volumes:
+      - .:/usr/share/nginx
+    depends_on: 
+      - db
+  php:
+    build:
+      context: .
+    volumes:
+      - .:/usr/share/nginx
+    depends_on:
+      - db
+#    environment:
+#      DB_DRIVER: mysql
+#      DB_SERVER: db
+#      DB_PORT: '3306'
+#      DB_USER: root
+#      DB_PASSWORD: ''
+#      DB_DATABASE: pocketmaps
+#      DB_SCHEMA: public
+#      DB_TABLE_PREFIX: craft_
+#      DEFAULT_SITE_URL: /
+#      ASSETS_BASE_PATH: /var/www/web/assets/local_uploads
+#      ASSETS_PUBLIC_PATH: /assets/local_uploads
+#      ENVIRONMENT: dev
+volumes:
+  postgres:
+
