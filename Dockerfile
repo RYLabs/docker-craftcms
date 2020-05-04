@@ -1,18 +1,17 @@
-FROM php:7-cli
+FROM docker-craftcms-composer:latest as composer
+FROM php:7-fpm
 
 RUN apt-get update && apt-get install -y \
-  git \
-  unzip \
-  wget \
   libzip-dev \
   libpq-dev \
   libmagickwand-dev \
   --no-install-recommends \
-  && docker-php-ext-install -j$(nproc) zip \
   && docker-php-ext-install -j$(nproc) pdo_pgsql \
   && pecl install imagick && docker-php-ext-enable imagick
 
-RUN wget https://getcomposer.org/installer -O composer-setup.php
-RUN php composer-setup.php --install-dir=/usr/bin --filename=composer
+COPY .dockerdev/fpm.ini $PHP_INI_DIR/conf.d/
 
-WORKDIR /usr/share/nginx/html
+WORKDIR /app
+
+COPY ./app /app
+COPY --from=composer /app/vendor /app/vendor

@@ -9,15 +9,24 @@ services:
     image: nginx:alpine
     volumes:
       - ./.dockerdev/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - .:/usr/share/nginx
+      - ./app:/app
     ports:
       - "8080:80"
     depends_on:
-      - fpm 
-  fpm:
+      - craft
+  composer:
     build:
-      dockerfile: ./.dockerdev/fpm.Dockerfile
+      dockerfile: ./.dockerdev/Dockerfile.composer
       context: .
+    image: docker-craftcms-composer:latest
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+  craft:
+    build:
+      context: .
+    image: docker-craftcms:latest
     environment: &php_environment
       DB_DSN: pgsql:host=db;port=5432;dbname=postgres
       DB_USER: postgres
@@ -25,17 +34,8 @@ services:
       DB_SCHEMA: public
       DB_TABLE_PREFIX: ''
     volumes:
-      - .:/usr/share/nginx
+      - ./app:/app
     depends_on: 
-      - db
-  php:
-    build:
-      context: .
-    environment:
-      <<: *php_environment
-    volumes:
-      - .:/usr/share/nginx
-    depends_on:
       - db
 volumes:
   postgres:
