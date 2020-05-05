@@ -11,7 +11,13 @@ RUN apt-get update && apt-get install -y \
 
 COPY .dockerdev/fpm.ini $PHP_INI_DIR/conf.d/
 
+# Copying nginx config so it can be mounted by nginx container
+RUN mkdir -p /etc/nginx/conf.d
+COPY .dockerdev/nginx/default.conf /etc/nginx/conf.d
+
 WORKDIR /app
 
 COPY ./app /app
 COPY --from=composer /app/vendor /app/vendor
+
+VOLUME [ "/app", "/etc/nginx/conf.d" ]
