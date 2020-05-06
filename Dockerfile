@@ -20,4 +20,6 @@ WORKDIR /app
 COPY ./app /app
 COPY --from=composer /app/vendor /app/vendor
 
+RUN chown www-data:www-data -R /app
+
 VOLUME [ "/app", "/etc/nginx/conf.d" ]
