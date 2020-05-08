@@ -5,38 +5,23 @@ services:
     restart: always
     volumes:
       - postgres:/var/lib/postgresql/data
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./.dockerdev/nginx:/etc/nginx/conf.d:delegated
-      - ./app:/app
-    ports:
-      - "8080:80"
-    depends_on:
-      - craft
-  composer:
-    build:
-      dockerfile: ./.dockerdev/Dockerfile.composer
-      context: .
-    image: rylabs/craftcms-composer:latest
-    volumes:
-      - ./app:/app
-    depends_on:
-      - db
   craft:
     build:
       context: .
-    image: rylabs/craftcms:latest
-    environment: &php_environment
+    environment:
       DB_DSN: pgsql:host=db;port=5432;dbname=postgres
       DB_USER: postgres
       DB_PASSWORD: ''
       DB_SCHEMA: public
       DB_TABLE_PREFIX: ''
+    ports:
+      - '8080:80'
     volumes:
       - ./app:/app
+      - composer:/composer
     depends_on: 
       - db
 volumes:
   postgres:
+  composer:
 
