@@ -6,6 +6,10 @@ This is a starter project for a Docker enabled CraftCMS project.
 
 Step 1: Clone this Repository
 
+```shell
+git clone https://github.com/RYLabs/docker-craftcms.git <name_of_project>
+```
+
 Step 2: Installing CraftCMS
 
 ```shell
@@ -19,19 +23,12 @@ Step 3: Start a shell in the CraftCMS container
 docker-compose run --rm craft /bin/bash
 ```
 
-Step 4: In the container shell, Continue with setting up Craft
-
-```shell
-# you should only need to setup the security key, everything else
-# should be done for you.
-craft setup/security-key
-
-# exit the container shell
-exit
-```
-
-Step 5: Startup Craft w/ Nginx
+Step 4: Startup Craft w/ Nginx
 
 ```shell
 docker-compose up
 ```
+
+Step 5: Go through the Web Browser Setup
+
+http://localhost:8080/admin/install
