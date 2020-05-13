@@ -23,5 +23,6 @@ RUN composer install
 
 COPY ./app /app
 
-RUN chown www-data:www-data -R /app
+RUN chown www-data:www-data -R /app && \
+    find /app -type d -exec chmod 775 {} \;
 

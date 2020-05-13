@@ -1,2 +1,4 @@
 app/vendor
 app/.env
+app/storage/logs/*
+app/storage/runtime/*
